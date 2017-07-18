@@ -233,7 +233,7 @@
     !define MUI_HEADERIMAGE
     !define MUI_HEADERIMAGE_BITMAP "icons\installer-header.bmp"
     !define HIFI_PROTOCOL_VERSION "H0h7811/zharXM3T8kXtlw=="
-    !define HIFI_MAIN_INSTALLER_URL "http://highfidelity.com/download/win/6850"
+    !define HIFI_MAIN_INSTALLER_URL "http://highfidelity.com/direct-download"
     ;;!define HIFI_MAIN_INSTALLER_URL "https://deployment.highfidelity.com/jobs/pr-build/label%3Dwindows/1042/HighFidelity-Beta-PR10794-e5666fbb2f9e0e7fa403cb3eafc74a386e253597.exe"
     ; Small test exe for testing/debugging.
     ;!define HIFI_MAIN_INSTALLER_URL "https://s3-us-west-1.amazonaws.com/hifi-content/zfox/Personal/test.exe"
