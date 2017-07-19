@@ -232,7 +232,7 @@
     !define MUI_ICON "icons\jimjamz.ico"
     !define MUI_HEADERIMAGE
     !define MUI_HEADERIMAGE_BITMAP "icons\installer-header.bmp"
-    !define HIFI_PROTOCOL_VERSION "H0h7811/zharXM3T8kXtlw=="
+    !define HIFI_PROTOCOL_VERSION "vNTlzyZbPVfAprVzet07vA=="
     !define HIFI_MAIN_INSTALLER_URL "http://highfidelity.com/direct-download"
     ;;!define HIFI_MAIN_INSTALLER_URL "https://deployment.highfidelity.com/jobs/pr-build/label%3Dwindows/1042/HighFidelity-Beta-PR10794-e5666fbb2f9e0e7fa403cb3eafc74a386e253597.exe"
     ; Small test exe for testing/debugging.
@@ -407,7 +407,7 @@
                                 Goto interface_not_found
                     installed_from_steam:
                         MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION \
-                        "You have an old version of High Fidelity installed through Steam.$\r$\nPlease update High Fidelity through Steam, then press Retry.$\r$\nTo quit this installer, press Cancel.$\r$\n$\r$\nNOTE: During debugging, while the Steam version of HiFi is out-of-date, you will get stuck here, as no version of HiFi is up-to-date enough to work with this installer." \
+                        "You have an old version of High Fidelity installed through Steam.$\r$\nPlease update High Fidelity through Steam, then press Retry.$\r$\nTo quit this installer, press Cancel." \
                         /SD IDCANCEL IDRETRY +3 IDCANCEL 0
                         ${nsProcess::Unload}
                         Quit
