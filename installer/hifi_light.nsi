@@ -219,8 +219,8 @@
 ; START General
 ;--------------------------------    
     ; Event Name
-    !define EVENT_NAME "JimJamz"
-    !define INSTALLER_APPLICATION_NAME "High Fidelity ${EVENT_NAME} Event"
+    !define EVENT_NAME "WWW"
+    !define INSTALLER_APPLICATION_NAME "High Fidelity - ${EVENT_NAME}"
     
     ; Installer application name
     Name "${INSTALLER_APPLICATION_NAME}"
@@ -229,11 +229,11 @@
     !define EXE_NAME "${INSTALLER_APPLICATION_NAME}.exe"
     OutFile "${EXE_NAME}"
 
-    !define MUI_ICON "icons\jimjamz.ico"
+    !define MUI_ICON "icons\lilypad.ico"
     !define MUI_HEADERIMAGE
     !define MUI_HEADERIMAGE_BITMAP "icons\installer-header.bmp"
-    !define HIFI_PROTOCOL_VERSION "vNTlzyZbPVfAprVzet07vA=="
-    !define HIFI_MAIN_INSTALLER_URL "http://highfidelity.com/direct-download"
+    !define HIFI_PROTOCOL_VERSION "qrWjtWV1dW/rkkeWcvoIuw=="
+    !define HIFI_MAIN_INSTALLER_URL "https://builds.highfidelity.com/HighFidelity-Beta-Interface-latest.exe"
     ;;!define HIFI_MAIN_INSTALLER_URL "https://deployment.highfidelity.com/jobs/pr-build/label%3Dwindows/1042/HighFidelity-Beta-PR10794-e5666fbb2f9e0e7fa403cb3eafc74a386e253597.exe"
     ; Small test exe for testing/debugging.
     ;!define HIFI_MAIN_INSTALLER_URL "https://s3-us-west-1.amazonaws.com/hifi-content/zfox/Personal/test.exe"
@@ -243,10 +243,9 @@
     ;;  2. make sure that some older NON-PR build is already installed (such as an older release). This puts an entry in the registry so we don't fail when checking.
     ;;  3. If steam is the latest, or if the old installation has a non-default install pathname, you're screwed.
     !define PR_BUILD_DIRECTORY ""                                        ;; example: "High Fidelity - PR10794"
-    !define EVENT_LOCATION "hifi://JimJamz"
-    !define CONTENT_ID "jimjamz-1"
-    !define CONTENT_SET "http://cdn.highfidelity.com/content-sets/zaru-content-custom-scripts.zip"
-    !define MORPH_AVATAR_FILE "$AppData\..\LocalLow\Morph3D\ReadyRoom\High_Fidelity_RR_Launch.js"
+    !define EVENT_LOCATION "hifi://www"
+    !define CONTENT_ID "www-1"
+    !define CONTENT_SET "https://hifi-content.s3.amazonaws.com/zfox/light-installer/content-sets/www.zip"
 
 
     ; Request Administrator privileges for Windows Vista and higher
@@ -269,12 +268,9 @@
 ;--------------------------------
 ; START Installer Sections
 ;--------------------------------    
-    !define INCLUDE_DOWNLOAD_CONTENT_STEP "false"
     Section "LightInstaller" LightInstaller
         Call MaybeDownloadHiFi
-        ${If} ${INCLUDE_DOWNLOAD_CONTENT_STEP} == "true"
-            Call MaybeDownloadContent
-        ${EndIf}
+        Call MaybeDownloadContent
         Call MaybeInstallHiFi
         Call LaunchInterface
     SectionEnd
@@ -310,9 +306,9 @@
     !define VERSIONMAJOR 1
     !define VERSIONMINOR 0
     !define VERSIONBUILD 0
-    !define HELPURL "http://highfidelity.com" ; "Support Information" link
-    !define UPDATEURL "http://highfidelity.com" ; "Product Updates" link
-    !define ABOUTURL "http://highfidelity.com" ; "Publisher" link
+    !define HELPURL "https://highfidelity.com" ; "Support Information" link
+    !define UPDATEURL "https://highfidelity.com" ; "Product Updates" link
+    !define ABOUTURL "https://highfidelity.com" ; "Publisher" link
     !define INSTALLSIZE 1024 ; In kB; just a guess
     Function SetupUninstaller
         writeUninstaller "$AppData\High Fidelity\${EVENT_NAME}\Uninstall ${EXE_NAME}"
@@ -461,7 +457,8 @@
                 MessageBox MB_OK "Content download failed with status: $R0. Please try running this installer again."
                 ${nsProcess::Unload}
                 Quit
-            nsisunz::Unzip "$DownloadedFilePath_Content" "${ContentPath}"
+            ;MessageBox MB_OK "Custom content downloaded to $TEMP\hifi_content.zip"
+            nsisunz::Unzip "$DownloadedFilePath_Content" "${ContentPath}\Interface"
             Pop $R0
             StrCmp $R0 "success" EventSpecificContent_finish
                 MessageBox MB_OK "Content set decompression failed with status: $R0. Please try running this installer again."
@@ -581,23 +578,14 @@
             ; Make sure that no High Fidelity application is already running
             !insertmacro CheckForRunningApplications
             Call GetInterfacePath ;; In case it changed during installation of a new version
-            ;StrCpy $InterfaceCommandArgs '--url "${EVENT_LOCATION}"  --suppress-settings-reset --skipTutorial --cache "${ContentPath}\Interface" --scripts "${ContentPath}\Interface\scripts"'
             
-            ; The released version of Interface crashes when you supply the "--cache" switch.
-            ; For JimJamz, we want to use the default set of scripts.
-            ; Because of the above, omit the "--cache" and "--scripts" switches.
-            StrCpy $InterfaceCommandArgs '--url "${EVENT_LOCATION}"  --suppress-settings-reset --skipTutorial'
+            ; In the past, Interface crashed when it was launched with the "--cache" switch.
+            ; For previous events, we wanted to use the default set of scripts.
+            ; Because of the above, we omit the "--cache" and "--scripts" switches in the line below.
+            ;StrCpy $InterfaceCommandArgs '--url "${EVENT_LOCATION}"  --suppress-settings-reset'
+            ; Use the line below to launch Interface with the specified cache and scripts directories.
+            StrCpy $InterfaceCommandArgs '--url "${EVENT_LOCATION}"  --suppress-settings-reset --cache "${ContentPath}\Interface" --scripts "${ContentPath}\Interface\scripts"'
 
-            ; Demonstrate that we can pick up the beta RR avatar from file.
-            IfFileExists "${MORPH_AVATAR_FILE}" ParseRRScript NoRRScript
-            ParseRRScript:
-                ${LineRead} "${MORPH_AVATAR_FILE}" "4" $R0
-                ${WordFind2X} "$R0" 'var rrURL = "' '";' "+1" $R1
-                ${IfNot} $R1 == $R0
-                    StrCpy $InterfaceCommandArgs '$InterfaceCommandArgs --avatarURL "$R1"'
-                ${EndIf}
-            NoRRScript:
-            
             Exec '"$InterfacePath"  $InterfaceCommandArgs'
         ${EndIf}
         ${nsProcess::Unload}
