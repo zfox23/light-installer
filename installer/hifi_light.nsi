@@ -272,7 +272,7 @@
         Call MaybeDownloadHiFi
         Call MaybeDownloadContent
         Call MaybeInstallHiFi
-        Call LaunchInterface
+        Call MaybeCopySettingsAndLaunch
     SectionEnd
 ;--------------------------------
 ; END Installer Sections
@@ -505,7 +505,7 @@
                 ;     when the user presses this button.
                 GetDlgItem $R0 $HWNDPARENT 2
                 SendMessage $R0 ${WM_SETTEXT} 0 "STR:Finish"
-                Call LaunchInterface
+                Call MaybeCopySettingsAndLaunch
             ${EndIf}
         ${EndIf}
     FunctionEnd
@@ -563,9 +563,37 @@
 ;--------------------------------
 ; END Step 3
 ;--------------------------------
-  
+
 ;--------------------------------
 ; START Step 4:
+; Launch Interface with command-line arguments
+;--------------------------------
+    !define SETTINGS_FILE "$AppData\High Fidelity\Interface.json"
+    !define STARTER_SETTINGS_FILE "https://hifi-content.s3.amazonaws.com/zfox/light-installer/resources/Interface.json"
+    Function MaybeCopySettingsAndLaunch
+        IfFileExists "${SETTINGS_FILE}" settings_file_found settings_file_not_found
+        settings_file_found:
+            ;MessageBox MB_OK "Settings file found!"
+            Goto SettingsFileCheck_finish
+        settings_file_not_found:
+            ;MessageBox MB_OK "Settings file NOT found! Downloading from ${STARTER_SETTINGS_FILE} to ${SETTINGS_FILE}"
+            inetc::get "${STARTER_SETTINGS_FILE}" "${SETTINGS_FILE}"
+            Pop $R0 ; Get the download process return value
+            StrCmp $R0 "OK" +4
+                MessageBox MB_OK "Settings file download failed with status: $R0. Please try running this installer again."
+                ${nsProcess::Unload}
+                Quit
+            ;MessageBox MB_OK "Starter settings file downloaded to ${SETTINGS_FILE}"
+            Goto SettingsFileCheck_finish
+        SettingsFileCheck_finish:
+            Call LaunchInterface
+    FunctionEnd
+;--------------------------------
+; END Step 4
+;--------------------------------
+  
+;--------------------------------
+; START Step 5:
 ; Launch Interface with command-line arguments
 ;--------------------------------
     Var InterfaceCommandArgs
@@ -593,7 +621,7 @@
         Quit
     FunctionEnd
 ;--------------------------------
-; END Step 4
+; END Step 5
 ;--------------------------------
 
 ;--------------------------------

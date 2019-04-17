@@ -11,6 +11,8 @@
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
 //
 
+var scriptsLocation = Paths.defaultScripts + "/";
+
 var DEFAULT_SCRIPTS_COMBINED = [
     "system/request-service.js",
     "system/progress.js",
@@ -35,8 +37,13 @@ var DEFAULT_SCRIPTS_COMBINED = [
     "system/miniTablet.js",
     "system/audioMuteOverlay.js"
 ];
+
+for (var i = 0; i < DEFAULT_SCRIPTS_COMBINED.length; i++) {
+    DEFAULT_SCRIPTS_COMBINED[i] = scriptsLocation + DEFAULT_SCRIPTS_COMBINED[i];
+}
+
 var DEFAULT_SCRIPTS_SEPARATE = [
-    "system/controllers/controllerScripts.js",
+    scriptsLocation + "system/controllers/controllerScripts.js",
     "https://hifi-content.s3.amazonaws.com/Experiences/Releases/marketPlaceItems/appreciate/v1.5/appResources/appData/appreciate_app.js"
 ];
 
