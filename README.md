@@ -9,11 +9,11 @@ A light installer for High Fidelity VR. Built using NSIS.
 - [NSIS Inetc Plugin](http://nsis.sourceforge.net/Inetc_plug-in)
 
 ## Current "High Fidelity Express" Installer Flow
-_This section of the README is current as of **2017-06-26 1:30 PM PDT**. It'll be updated as the installer logic matures._
+_This section of the README is current as of **2019-04-17 5:00 PM PDT**. It'll be updated as the installer logic matures._
 
-When a user runs `High Fidelity Jaws Event.exe`, the following behavior occurs:
+When a user runs `High Fidelity - WWW.exe`, the following behavior occurs:
 1. We **ask for administrator permissions** so that it can perform various operations (like reading from the registry and creating files).
-2. We **copy the Jaws Event installer EXE file to `%AppData%\High Fidelity\Jaws\High Fidelity Jaws Event.exe`, then create shortcuts to that file on the desktop and in the Start menu.
+2. We **copy the WWW installer EXE file** to `%AppData%\High Fidelity\WWW\High Fidelity - WWW.exe`, then create shortcuts to that file on the desktop and in the Start menu.
 3. We **verify that the "correct" version of High Fidelity Interface is installed** on the user's computer.
     1. We read from the registry at `HKEY_CLASSES_ROOT\hifi\DefaultIcon` to **determine the path of `interface.exe`** that the user installed most recently
         - _(FYI: `HKCR\<protocol>\shell\open\command\(Default)` is where the registry keys go that determine what to do when you click on, say, a `hifi://` or `itunes://` link)_
@@ -42,7 +42,13 @@ When a user runs `High Fidelity Jaws Event.exe`, the following behavior occurs:
     3. Once the full High Fidelity Interface installer completes, **the light installer will re-verify** that the correct version of Interface is installed on the system.
         1. If, at this point, the correct version of Interface is not installed, the light installer will fail and instruct the user to restart the light installer.
         2. If the correct version of Interface _is_ installed, we continue.
-6. We, again determine the (possibly new) path of `interface.exe`, then **run `interface.exe` using the following command: `interface.exe --url hifi://dev-playa/event --suppress-settings-reset --skipTutorial --cache <content_set_dir> --scripts <content_set_dir>\scripts`**.
+6. We **check if an `Interface.json` file exists in the user's `AppData\Interface\` directory**:
+    1. If the user already has an `Interface.json` file on their hard drive:
+        1. We continue onto the next step.
+    2. If the user _does not_ already have an `Interface.json` file on their hard drive:
+        1. We download a "starter" Settings file from S3 and place it in the user's `AppData\Interface\` directory. Right now, that file only contains `{"firstRun": false}`.
+        2. We continue onto the next step.
+6. We, again determine the (possibly new) path of `interface.exe`, then **run `interface.exe` using the following command: `interface.exe --url hifi://www --suppress-settings-reset --cache <content_set_dir> --scripts <content_set_dir>\scripts`**.
     - _The cache part doesn't work yet, so we're not yet getting that acceleration. But that's Interface issue, not a micro-installer issue._
     - Now that the user has gotten this far in the installer, the path to `interface.exe` _should be_ either the one installed by the installer in the steps above, OR the path the installer verified to be up-to-date enough for the event.
 

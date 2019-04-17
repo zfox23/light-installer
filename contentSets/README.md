@@ -1,7 +1,9 @@
 # The `/contentSets` Folder
-The contents of this folder will be ignored by Git, _except_ for the `examples` folder. Use the `examples` folder as a starting point for your content sets.
+The contents of this folder will be ignored by Git, _except_ for `example/example.zip`. Unzip the contents of that folder somewhere, and use it as a starting point for your content sets.
 
 Create a new folder within the `contentSets` folder, then use your new folder as a sandbox for developing your custom content sets to be used with the Light Installer.
+
+Once you have a custom content set, ZIP up the three populated folders and their contents, then upload that ZIP file to a remote host. After that, modify variables `hifi_light.nsi` as necessary and compile your installer.
 
 ## Custom Content Set Folder Structure
 ```
@@ -32,13 +34,12 @@ To correctly populate the `data8` and `ktx_cache` folders inside your custom con
 3. Click `Edit` -> `Reload Content (Clears all caches)`
 4. Fly around the domain so that your system caches all of the content.
 5. Copy the contents of `C:/Users/<username>/AppData/Local/High Fidelity/Interface/data8` to `<light-installer>/contentSets/data8/`
-6. Copy the contents of 
+6. Copy the contents of `C:/Users/<username>/AppData/Local/High Fidelity/Interface/ktx_cache` to `<light-installer>/contentSets/ktx_cache/`
 
 ### `scripts`
 The contents of this folder should contain a `defaultScripts.js` file, which Interface will read when it is launched from the Light Installer.
 
 For an example `defaultScripts.js` file, open `<light-installer>/contentSets/example/scripts/defaultScripts.js`. That example `defaultScripts.js` file looks very similar to the RC81 `defaultScripts.js` file, with the following changes:
-    - Uses the (as of RC81, deprecated) `Paths` API to get Interface's defaullt scripts location so that copying all default scripts into the custom content set directory is unnecessary.
     - An inclusion of an uncertified copy of the Appreciate v1.5 app.
     - The removal of the Interstitial Mode scripts, regardless of the user's `Window.interstitialModeEnabled` setting.
 
