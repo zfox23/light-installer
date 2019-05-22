@@ -49,7 +49,6 @@ When a user runs `High Fidelity - WWW.exe`, the following behavior occurs:
         1. We download a "starter" Settings file from S3 and place it in the user's `AppData\Interface\` directory. Right now, that file only contains `{"firstRun": false}`.
         2. We continue onto the next step.
 6. We, again determine the (possibly new) path of `interface.exe`, then **run `interface.exe` using the following command: `interface.exe --url hifi://www --suppress-settings-reset --cache <content_set_dir> --scripts <content_set_dir>\scripts`**.
-    - _The cache part doesn't work yet, so we're not yet getting that acceleration. But that's Interface issue, not a micro-installer issue._
     - Now that the user has gotten this far in the installer, the path to `interface.exe` _should be_ either the one installed by the installer in the steps above, OR the path the installer verified to be up-to-date enough for the event.
 
 ## Cumulative Test Plan
